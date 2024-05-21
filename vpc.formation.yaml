@@ -3,6 +3,8 @@ Resources:
     Type: AWS::EC2::VPC
     Properties:
       CidrBlock: 10.0.0.0/16
+      EnableDnsHostnames: true
+      EnableDnsSupport: true
       Tags:
         - Key: Name
           Value: MainVPC
@@ -62,3 +64,37 @@ Resources:
           Value: 1b
         - Key: Access
           Value: Private
+  MssqlDatabaseSubnetGroup:
+    Type: AWS::RDS::DBSubnetGroup
+    Properties:
+      DBSubnetGroupDescription: Subnet group for MSSQL database
+      SubnetIds:
+        - !Ref PublicSubnet1a
+        - !Ref PublicSubnet1b
+      Tags:
+        - Key: Name
+          Value: MssqlDatabaseSubnetGroup
+  MssqlDatabase:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      DBInstanceIdentifier: MssqlDatabase
+      AllocatedStorage: '20'
+      DBInstanceClass: db.t3.micro
+      Engine: sqlserver-ex
+      MasterUsername: username
+      MasterUserPassword: password
+      BackupRetentionPeriod: 7
+      MultiAZ: false
+      PubliclyAccessible: true
+      DBSubnetGroupName: !Ref MssqlDatabaseSubnetGroup
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Network
+          Value: Public
+  VPCGatewayAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref MainVPC
+      InternetGatewayId: !Ref InternetGateway
