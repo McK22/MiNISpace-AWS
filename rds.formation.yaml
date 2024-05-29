@@ -64,37 +64,39 @@ Resources:
           Value: 1b
         - Key: Access
           Value: Private
-  MssqlDatabaseSubnetGroup:
+  SqlServerDatabaseSubnetGroup:
     Type: AWS::RDS::DBSubnetGroup
     Properties:
       DBSubnetGroupDescription: Subnet group for MSSQL database
       SubnetIds:
-        - !Ref PublicSubnet1a
-        - !Ref PublicSubnet1b
+        - !Ref PrivateSubnet1a
+        - !Ref PrivateSubnet1b
       Tags:
         - Key: Name
           Value: MssqlDatabaseSubnetGroup
-  MssqlDatabase:
+  SqlServerSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security group for sql server database
+      VpcId: !Ref MainVPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 1433
+          ToPort: 1433
+          CidrIp: 0.0.0.0/0
+  SqlServerDatabase:
     Type: AWS::RDS::DBInstance
     Properties:
-      DBInstanceIdentifier: MssqlDatabase
+      DBInstanceIdentifier: SqlServerDatabase
       AllocatedStorage: '20'
       DBInstanceClass: db.t3.micro
       Engine: sqlserver-ex
+      LicenseModel: license-included
       MasterUsername: username
       MasterUserPassword: password
       BackupRetentionPeriod: 7
       MultiAZ: false
-      PubliclyAccessible: true
-      DBSubnetGroupName: !Ref MssqlDatabaseSubnetGroup
-  InternetGateway:
-    Type: AWS::EC2::InternetGateway
-    Properties:
-      Tags:
-        - Key: Network
-          Value: Public
-  VPCGatewayAttachment:
-    Type: AWS::EC2::VPCGatewayAttachment
-    Properties:
-      VpcId: !Ref MainVPC
-      InternetGatewayId: !Ref InternetGateway
+      PubliclyAccessible: false
+      DBSubnetGroupName: !Ref SqlServerDatabaseSubnetGroup
+      VPCSecurityGroups:
+        - !Ref SqlServerSecurityGroup
