@@ -64,39 +64,38 @@ Resources:
           Value: 1b
         - Key: Access
           Value: Private
-  SqlServerDatabaseSubnetGroup:
+  PostgresSubnetGroup:
     Type: AWS::RDS::DBSubnetGroup
     Properties:
-      DBSubnetGroupDescription: Subnet group for MSSQL database
+      DBSubnetGroupDescription: Subnet group for Postgres database
       SubnetIds:
         - !Ref PrivateSubnet1a
         - !Ref PrivateSubnet1b
       Tags:
         - Key: Name
-          Value: MssqlDatabaseSubnetGroup
-  SqlServerSecurityGroup:
+          Value: PostgresSubnetGroup
+  PostgresSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: Security group for sql server database
+      GroupDescription: Security group for Postgres database
       VpcId: !Ref MainVPC
       SecurityGroupIngress:
         - IpProtocol: tcp
-          FromPort: 1433
-          ToPort: 1433
+          FromPort: 5432
+          ToPort: 5432
           CidrIp: 0.0.0.0/0
-  SqlServerDatabase:
+  PostgresDatabase:
     Type: AWS::RDS::DBInstance
     Properties:
-      DBInstanceIdentifier: SqlServerDatabase
+      DBInstanceIdentifier: PostgresDatabase
       AllocatedStorage: '20'
-      DBInstanceClass: db.t3.micro
-      Engine: sqlserver-ex
-      LicenseModel: license-included
-      MasterUsername: username
+      DBInstanceClass: db.c6gd.medium
+      Engine: postgres
+      MasterUsername: postgres
       MasterUserPassword: password
       BackupRetentionPeriod: 7
-      MultiAZ: false
+      MultiAZ: true
       PubliclyAccessible: false
-      DBSubnetGroupName: !Ref SqlServerDatabaseSubnetGroup
+      DBSubnetGroupName: !Ref PostgresSubnetGroup
       VPCSecurityGroups:
-        - !Ref SqlServerSecurityGroup
+        - !Ref PostgresSecurityGroup
