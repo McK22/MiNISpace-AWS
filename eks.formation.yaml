@@ -49,6 +49,3 @@ Resources:
         - !Ref Subnet2Id
       Selectors:
         - Namespace: prod-us
-
-          
-

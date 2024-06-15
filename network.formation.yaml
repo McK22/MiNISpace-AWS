@@ -18,7 +18,7 @@ Resources:
       Tags:
         - Key: Name
           Value: PublicSubnet1a
-        - Key: AvailablityZone
+        - Key: AvailabilityZone
           Value: 1a
         - Key: Access
           Value: Public
@@ -32,7 +32,7 @@ Resources:
       Tags:
         - Key: Name
           Value: PrivateSubnet1a
-        - Key: AvailablityZone
+        - Key: AvailabilityZone
           Value: 1b
         - Key: Access
           Value: Private
@@ -46,7 +46,7 @@ Resources:
       Tags:
         - Key: Name
           Value: PublicSubnet1b
-        - Key: AvailablityZone
+        - Key: AvailabilityZone
           Value: 1b
         - Key: Access
           Value: Public
@@ -60,7 +60,7 @@ Resources:
       Tags:
         - Key: Name
           Value: PrivateSubnet1b
-        - Key: AvailablityZone
+        - Key: AvailabilityZone
           Value: 1b
         - Key: Access
           Value: Private
