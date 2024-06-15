@@ -30,6 +30,7 @@ Resources:
       Name: atheon
       Version: "1.30"
       RoleArn: "arn:aws:iam::739337767874:role/LabRole"
+      AccessConfig: API_AND_CONFIG_MAP
       ResourcesVpcConfig:
         SecurityGroupIds:
           - !Ref EksSecurityGroup 
@@ -39,10 +40,10 @@ Resources:
         EndpointPublicAccess: true
         EndpointPrivateAccess: true
   EksFargateProfile:
-    Type: AWS:EKS:FargateProfile
+    Type: AWS::EKS::FargateProfile
     Properties:
-      FargateProfileName: prod-node-pool
-      ClusterName: atheon
+      FargateProfileName: prodNodePool
+      ClusterName: !Ref EksCluster
       PodExecutionRoleArn: "arn:aws:iam::739337767874:role/LabRole"
       Subnets:
         - !Ref Subnet1Id
