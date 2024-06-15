@@ -1,76 +1,19 @@
+Parameters:
+  VpcId:
+    Type: String
+  Subnet1Id:
+    Type: String
+  Subnet2Id:
+    Type: String
+
 Resources:
-  MainVPC:
-    Type: AWS::EC2::VPC
-    Properties:
-      CidrBlock: 10.0.0.0/16
-      EnableDnsHostnames: true
-      EnableDnsSupport: true
-      Tags:
-        - Key: Name
-          Value: MainVPC
-  PublicSubnet1a:
-    Type: AWS::EC2::Subnet
-    Properties:
-      VpcId: !Ref MainVPC
-      CidrBlock: 10.0.0.0/24
-      AvailabilityZone: us-east-1a
-      MapPublicIpOnLaunch: true
-      Tags:
-        - Key: Name
-          Value: PublicSubnet1a
-        - Key: AvailablityZone
-          Value: 1a
-        - Key: Access
-          Value: Public
-  PrivateSubnet1a:
-    Type: AWS::EC2::Subnet
-    Properties:
-      VpcId: !Ref MainVPC
-      CidrBlock: 10.0.2.0/23
-      AvailabilityZone: us-east-1a
-      MapPublicIpOnLaunch: false
-      Tags:
-        - Key: Name
-          Value: PrivateSubnet1a
-        - Key: AvailablityZone
-          Value: 1b
-        - Key: Access
-          Value: Private
-  PublicSubnet1b:
-    Type: AWS::EC2::Subnet
-    Properties:
-      VpcId: !Ref MainVPC
-      CidrBlock: 10.0.1.0/24
-      AvailabilityZone: us-east-1b
-      MapPublicIpOnLaunch: true
-      Tags:
-        - Key: Name
-          Value: PublicSubnet1b
-        - Key: AvailablityZone
-          Value: 1b
-        - Key: Access
-          Value: Public
-  PrivateSubnet1b:
-    Type: AWS::EC2::Subnet
-    Properties:
-      VpcId: !Ref MainVPC
-      CidrBlock: 10.0.4.0/23
-      AvailabilityZone: us-east-1b
-      MapPublicIpOnLaunch: false
-      Tags:
-        - Key: Name
-          Value: PrivateSubnet1b
-        - Key: AvailablityZone
-          Value: 1b
-        - Key: Access
-          Value: Private
   PostgresSubnetGroup:
     Type: AWS::RDS::DBSubnetGroup
     Properties:
       DBSubnetGroupDescription: Subnet group for Postgres database
       SubnetIds:
-        - !Ref PrivateSubnet1a
-        - !Ref PrivateSubnet1b
+        - !Ref Subnet1Id
+        - !Ref Subnet2Id
       Tags:
         - Key: Name
           Value: PostgresSubnetGroup
@@ -78,12 +21,15 @@ Resources:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: Security group for Postgres database
-      VpcId: !Ref MainVPC
+      VpcId: !Ref VpcId
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: 5432
           ToPort: 5432
           CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: PostgresSecurityGroup
   PostgresDatabase:
     Type: AWS::RDS::DBInstance
     Properties:

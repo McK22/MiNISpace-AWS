@@ -1,0 +1,78 @@
+Resources:
+  MainVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsHostnames: true
+      EnableDnsSupport: true
+      Tags:
+        - Key: Name
+          Value: MainVPC
+  PublicSubnet1a:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref MainVPC
+      CidrBlock: 10.0.0.0/24
+      AvailabilityZone: us-east-1a
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: PublicSubnet1a
+        - Key: AvailablityZone
+          Value: 1a
+        - Key: Access
+          Value: Public
+  PrivateSubnet1a:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref MainVPC
+      CidrBlock: 10.0.2.0/23
+      AvailabilityZone: us-east-1a
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: Name
+          Value: PrivateSubnet1a
+        - Key: AvailablityZone
+          Value: 1b
+        - Key: Access
+          Value: Private
+  PublicSubnet1b:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref MainVPC
+      CidrBlock: 10.0.1.0/24
+      AvailabilityZone: us-east-1b
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: PublicSubnet1b
+        - Key: AvailablityZone
+          Value: 1b
+        - Key: Access
+          Value: Public
+  PrivateSubnet1b:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref MainVPC
+      CidrBlock: 10.0.4.0/23
+      AvailabilityZone: us-east-1b
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: Name
+          Value: PrivateSubnet1b
+        - Key: AvailablityZone
+          Value: 1b
+        - Key: Access
+          Value: Private
+
+Outputs:
+  VpcId:
+    Value: !Ref MainVPC
+  PublicSubnet1a:
+    Value: !Ref PublicSubnet1a
+  PublicSubnet1b:
+    Value: !Ref PublicSubnet1b
+  PrivateSubnet1a:
+    Value: !Ref PrivateSubnet1a
+  PrivateSubnet1b:
+    Value: !Ref PrivateSubnet1b
