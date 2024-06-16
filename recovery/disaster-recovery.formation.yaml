@@ -1,0 +1,5 @@
+Resources:
+  NetworkStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://s3.amazonaws.com/cf-minispace-bucket/network-recovery.formation.yaml

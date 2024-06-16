@@ -1,0 +1,59 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: AWS CloudFormation template to create Backup Vaults for S3
+
+Resources:
+  S3BackupVault:
+    Type: AWS::Backup::BackupVault
+    Properties:
+      BackupVaultName: my-s3-backup-vault
+      BackupVaultTags:
+        Project: S3Backup
+
+  S3DestinationBackupVault:
+    Type: AWS::Backup::BackupVault
+    Properties:
+      BackupVaultName: my-s3-destination-backup-vault
+      BackupVaultTags:
+        Project: S3Backup
+
+  S3BackupPlan:
+    Type: AWS::Backup::BackupPlan
+    Properties:
+      BackupPlan:
+        BackupPlanName: S3BackupPlan
+        BackupPlanRule:
+          - 
+            RuleName: DailyBackup
+            TargetBackupVault: !Ref S3BackupVault
+            ScheduleExpression: cron(57 19 ? * * *)
+            Lifecycle: 
+              DeleteAfterDays: 7
+            CopyActions:
+              -
+                DestinationBackupVaultArn: !GetAtt S3DestinationBackupVault.BackupVaultArn
+                Lifecycle:
+                  DeleteAfterDays: 14
+            RecoveryPointTags:
+              Type: S3Backup
+
+  S3BackupSelection:
+    Type: AWS::Backup::BackupSelection
+    Properties:
+      BackupPlanId: !Ref S3BackupPlan
+      BackupSelection:
+        SelectionName: S3BackupSelection
+        IamRoleArn: arn:aws:iam::739337767874:role/LabRole
+        Resources:
+          - arn:aws:s3:::minispace-photos
+
+Outputs:
+  BackupVaultARN:
+    Description: ARN of the Backup Vault
+    Value: !GetAtt 
+      - S3BackupVault
+      - BackupVaultArn
+  DestinationBackupVaultARN:
+    Description: ARN of the Destination Backup Vault
+    Value: !GetAtt 
+      - S3DestinationBackupVault
+      - BackupVaultArn
