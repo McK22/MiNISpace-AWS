@@ -19,3 +19,12 @@ Resources:
         VpcId: !GetAtt NetworkStack.Outputs.VpcId
         Subnet1Id: !GetAtt NetworkStack.Outputs.PrivateSubnet1a
         Subnet2Id: !GetAtt NetworkStack.Outputs.PrivateSubnet1b
+  S3BackupStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://s3.amazonaws.com/cf-minispace-bucket/s3-backup-plan.formation.yaml
+      Parameters:
+        VpcId: !GetAtt NetworkStack.Outputs.VpcId
+        Subnet1Id: !GetAtt NetworkStack.Outputs.PrivateSubnet1a
+        Subnet2Id: !GetAtt NetworkStack.Outputs.PrivateSubnet1b
+
