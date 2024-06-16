@@ -30,7 +30,8 @@ Resources:
       Name: atheon
       Version: "1.30"
       RoleArn: "arn:aws:iam::739337767874:role/LabRole"
-      AccessConfig: API_AND_CONFIG_MAP
+      AccessConfig:
+        AuthenticationMode: API_AND_CONFIG_MAP
       ResourcesVpcConfig:
         SecurityGroupIds:
           - !Ref EksSecurityGroup 
