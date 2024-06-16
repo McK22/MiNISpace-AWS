@@ -64,6 +64,20 @@ Resources:
           Value: 1b
         - Key: Access
           Value: Private
+  InternetGatewayStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://s3.amazonaws.com/cf-minispace-bucket/internet-gateway.formation.yaml
+      Parameters:
+        VpcId: !Ref MainVPC
+  NatGatewayStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://s3.amazonaws.com/cf-minispace-bucket/nat-gateway.formation.yaml
+      Parameters:
+        Subnet1Id: !Ref PublicSubnet1a
+        Subnet2Id: !Ref PublicSubnet1b
+
 
 Outputs:
   VpcId:
