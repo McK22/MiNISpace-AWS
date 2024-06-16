@@ -1,0 +1,91 @@
+Parameters:
+  VpcId:
+    Type: String
+  PublicSubnet1Id:
+    Type: String
+  PublicSubnet2Id:
+    Type: String
+  PrivateSubnet1Id:
+    Type: String
+  PrivateSubnet2Id:
+    Type: String
+  InternetGatewayId:
+    Type: String
+  NatGateway1Id:
+    Type: String
+  NatGateway2Id:
+    Type: String
+
+Resources:
+  PublicRouteTable1a:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VpcId
+      Tags:
+        - Key: Name
+          Value: public-route-table-a
+  PublicRouteTableSubnet1Association:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnet1Id
+      RouteTableId: !Ref PublicRouteTable1a
+  PublicRouteTable1aInternetGatewayRoute:
+    Type: AWS::EC2::Route
+    Properties:
+      GatewayId: !Ref InternetGatewayId
+      RouteTableId: !Ref PublicRouteTable1a
+      DestinationCidrBlock: 0.0.0.0/32
+  PublicRouteTable1b:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VpcId
+      Tags:
+        - Key: Name
+          Value: public-route-table-b
+  PublicRouteTableSubnet2Association:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnet2Id
+      RouteTableId: !Ref PublicRouteTable1b
+  PublicRouteTable1bInternetGatewayRoute:
+    Type: AWS::EC2::Route
+    Properties:
+      GatewayId: !Ref InternetGatewayId
+      RouteTableId: !Ref PublicRouteTable1b
+      DestinationCidrBlock: 0.0.0.0/32
+  PrivateRouteTable1a:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VpcId
+      Tags:
+        - Key: Name
+          Value: private-route-table-a
+  PrivateRouteTableSubnet1Association:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PrivateSubnet1Id
+      RouteTableId: !Ref PrivateRouteTable1a
+  PrivateRouteTable1aInternetGatewayRoute:
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatGateway1Id
+      RouteTableId: !Ref PrivateRouteTable1a
+      DestinationCidrBlock: 0.0.0.0/32
+  PrivateRouteTable1b:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VpcId
+      Tags:
+        - Key: Name
+          Value: private-route-table-b
+  PrivateRouteTableSubnet2Association:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PrivateSubnet2Id
+      RouteTableId: !Ref PrivateRouteTable1b
+  PrivateRouteTable1bInternetGatewayRoute:
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatGateway2Id
+      RouteTableId: !Ref PrivateRouteTable1b
+      DestinationCidrBlock: 0.0.0.0/32

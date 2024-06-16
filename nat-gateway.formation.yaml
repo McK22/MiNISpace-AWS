@@ -33,3 +33,9 @@ Resources:
       Tags:
         - Key: Name
           Value: NatGateway1b
+
+Outputs:
+  NatGateway1aId:
+    Value: !Ref NatGateway1a
+  NatGateway1bId:
+    Value: !Ref NatGateway1b

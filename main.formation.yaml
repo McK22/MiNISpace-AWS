@@ -2,11 +2,11 @@ Resources:
   NetworkStack:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://s3.amazonaws.com/cf-minispace-bucket/network.formation.yaml
+      TemplateURL: https://s3.amazonaws.com/cff-minispace-bucket/network.formation.yaml
   RdsStack:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://s3.amazonaws.com/cf-minispace-bucket/rds.formation.yaml
+      TemplateURL: https://s3.amazonaws.com/cff-minispace-bucket/rds.formation.yaml
       Parameters:
         VpcId: !GetAtt NetworkStack.Outputs.VpcId
         Subnet1Id: !GetAtt NetworkStack.Outputs.PrivateSubnet1a
@@ -14,7 +14,7 @@ Resources:
   EksStack:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://s3.amazonaws.com/cf-minispace-bucket/eks.formation.yaml
+      TemplateURL: https://s3.amazonaws.com/cff-minispace-bucket/eks.formation.yaml
       Parameters:
         VpcId: !GetAtt NetworkStack.Outputs.VpcId
         Subnet1Id: !GetAtt NetworkStack.Outputs.PrivateSubnet1a
