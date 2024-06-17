@@ -47,7 +47,7 @@ Resources:
         - Key: Name
           Value: PublicSubnet1d
         - Key: AvailabilityZone
-          Value: 1d
+          Value: '1d'
         - Key: Access
           Value: Public
   PrivateSubnet1d:
@@ -61,7 +61,7 @@ Resources:
         - Key: Name
           Value: PrivateSubnet1d
         - Key: AvailabilityZone
-          Value: 1d
+          Value: '1d'
         - Key: Access
           Value: Private
   InternetGatewayStack:
@@ -73,10 +73,23 @@ Resources:
   NatGatewayStack:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://s3.amazonaws.com/cf-minispace-bucket/nat-gateway-recovery.formation.yaml
+      TemplateURL: https://s3.amazonaws.com/cf-minispace-bucket/nat-gateway.formation.yaml
       Parameters:
         Subnet1Id: !Ref PublicSubnet1c
         Subnet2Id: !Ref PublicSubnet1d
+  RouteTablesStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://s3.amazonaws.com/cf-minispace-bucket/route-tables.formation.yaml
+      Parameters:
+        VpcId: !Ref MainVPC
+        PublicSubnet1Id: !Ref PublicSubnet1c
+        PublicSubnet2Id: !Ref PublicSubnet1d
+        PrivateSubnet1Id: !Ref PrivateSubnet1c
+        PrivateSubnet2Id: !Ref PrivateSubnet1d
+        InternetGatewayId: !GetAtt InternetGatewayStack.Outputs.InternetGatewayId
+        NatGateway1Id: !GetAtt NatGatewayStack.Outputs.NatGateway1aId
+        NatGateway2Id: !GetAtt NatGatewayStack.Outputs.NatGateway1bId
 
 
 Outputs:
