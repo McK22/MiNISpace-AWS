@@ -11,10 +11,10 @@ Resources:
         VpcId: !GetAtt NetworkStack.Outputs.VpcId
         Subnet1Id: !GetAtt NetworkStack.Outputs.PrivateSubnet1a
         Subnet2Id: !GetAtt NetworkStack.Outputs.PrivateSubnet1b
-  EksStack:
+  EcsStack:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://s3.amazonaws.com/cff-minispace-bucket/eks.formation.yaml
+      TemplateURL: https://s3.amazonaws.com/cff-minispace-bucket/alb.formation.yaml
       Parameters:
         VpcId: !GetAtt NetworkStack.Outputs.VpcId
         Subnet1Id: !GetAtt NetworkStack.Outputs.PrivateSubnet1a
