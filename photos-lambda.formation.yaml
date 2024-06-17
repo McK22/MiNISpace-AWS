@@ -1,0 +1,76 @@
+Resources:
+  Function:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: minispace-s3-upload
+      Handler: index.lambda_handler
+      Runtime: python3.12
+      MemorySize: 128
+      Timeout: 10
+      Role: arn:aws:iam::606647179916:role/LabRole
+      Code:
+        ZipFile: |
+          import json
+          import boto3
+          import uuid
+  
+          # Configure S3 client
+          s3 = boto3.client('s3')
+  
+          def lambda_handler(event, context):
+           # Get the bucket name from environment variable
+           bucket_name = 'minispace-photoss'
+           key = f'{uuid.uuid4()}.png' # Generate a unique key for the object
+  
+           # Generate pre-signed URL
+           presigned_url = s3.generate_presigned_url(
+           ClientMethod='put_object',
+           Params={
+             'Bucket': bucket_name, 
+             'Key': key,
+             'ContentType': 'application/png', # Set the Content-Type for .png
+           },
+           ExpiresIn=3600, # The expiration time of the URL (in seconds), here it's set to 1 hour
+           HttpMethod='PUT' # Only allow PUT requests on the url
+           )
+  
+           # Construct the response
+           response = {
+             'statusCode': 200,
+             'headers': {
+             'Access-Control-Allow-Origin': '*'
+             },
+             'body': json.dumps({
+             'presignedUrl': presigned_url,
+             'key': key
+             })
+           }
+  
+           return response
+  ApiGateway:
+    Type: AWS::ApiGatewayV2::Api
+    Properties:
+      Name: PhotosApiGateway
+      ProtocolType: HTTP
+  Integration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref ApiGateway
+      IntegrationType: AWS_PROXY
+      IntegrationUri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${Function.Arn}/invocations"
+      PayloadFormatVersion: 2.0
+  Route:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      RouteKey: GET /minispace-s3-upload
+      ApiId: !Ref ApiGateway
+      Target: !Sub integrations/${Integration}
+  Stage:
+    Type: AWS::ApiGatewayV2::Stage
+    Properties:
+      ApiId: !Ref ApiGateway
+      StageName: $default
+
+Outputs:
+  Lambda:
+    Value: !Ref Function

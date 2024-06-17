@@ -10,4 +10,48 @@ Resources:
       Parameters:
         BucketId: !GetAtt BucketStack.Outputs.BucketId
         BucketDomainName: !GetAtt BucketStack.Outputs.BucketDomainName
-        BucketName: !GetAtt BucketStack.Outputs.BucketName
+  LambdaStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://s3.amazonaws.com/cff-minispace-bucket/photos-lambda.formation.yaml
+  BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !GetAtt BucketStack.Outputs.BucketName
+      PolicyDocument: {
+        "Version": "2008-10-17",
+        "Id": "PolicyForCloudFrontPrivateContent",
+        "Statement": [
+          {
+            "Sid": "AllowCloudFrontServicePrincipal",
+            "Effect": "Allow",
+            "Principal": {
+              "Service": "cloudfront.amazonaws.com"
+            },
+            "Action": "s3:GetObject",
+            "Resource": "arn:aws:s3:::minispace-photoss/*",
+            "Condition": {
+              "StringEquals": {
+                "AWS:SourceArn": !Sub "arn:aws:cloudfront::${AWS::AccountId}:distribution/${CloudFrontStack.Outputs.Distribution}"
+              }
+            }
+          },
+          {
+            "Sid": "AllowLambdaServicePrincipal",
+            "Effect": "Allow",
+            "Principal": {
+              "Service": "lambda.amazonaws.com"
+            },
+            "Action": [
+              "s3:PutObject",
+              "s3:DeleteObject"
+            ],
+            "Resource": "arn:aws:s3:::minispace-photoss/*",
+            "Condition": {
+              "ArnLike": {
+                "AWS:SourceArn": !Sub "arn:aws:lambda:us-east-1:${AWS::AccountId}:function:${LambdaStack.Outputs.Lambda}"
+              }
+            }
+          }
+        ]
+      }
