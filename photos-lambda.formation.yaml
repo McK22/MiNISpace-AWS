@@ -80,7 +80,7 @@ Resources:
       FunctionName: !GetAtt Function.Arn
       Action: lambda:InvokeFunction
       Principal: apigateway.amazonaws.com
-      SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGateway.ApiId}/minispace-s3-upload"
+      SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGateway.ApiId}/*/*/minispace-s3-upload"
     DependsOn: Stage
 
 Outputs:
