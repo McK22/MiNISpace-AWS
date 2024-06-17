@@ -1,0 +1,13 @@
+Resources:
+  BucketStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://s3.amazonaws.com/cff-minispace-bucket/photos-bucket.formation.yaml
+  CloudFrontStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://s3.amazonaws.com/cff-minispace-bucket/photos-cloudfront.formation.yaml
+      Parameters:
+        BucketId: !GetAtt BucketStack.Outputs.BucketId
+        BucketDomainName: !GetAtt BucketStack.Outputs.BucketDomainName
+        BucketName: !GetAtt BucketStack.Outputs.BucketName
