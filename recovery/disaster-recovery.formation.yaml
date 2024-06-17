@@ -3,3 +3,11 @@ Resources:
     Type: AWS::CloudFormation::Stack
     Properties:
       TemplateURL: https://s3.amazonaws.com/cf-minispace-bucket/network-recovery.formation.yaml
+  RdsStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://s3.amazonaws.com/cf-minispace-bucket/rds-recovery.formation.yaml
+      Parameters:
+        VpcId: !GetAtt NetworkStack.Outputs.VpcId
+        Subnet1Id: !GetAtt NetworkStack.Outputs.PrivateSubnet1c
+        Subnet2Id: !GetAtt NetworkStack.Outputs.PrivateSubnet1d

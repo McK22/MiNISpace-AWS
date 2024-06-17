@@ -1,6 +1,8 @@
 Parameters:
   Subnet1Id:
     Type: String
+  Subnet2Id:
+    Type: String
 
 Resources:
   ElasticIp1a:
@@ -9,6 +11,12 @@ Resources:
       Tags:
         - Key: Name
           Value: ElasticIp1a
+  ElasticIp1b:
+    Type: AWS::EC2::EIP
+    Properties:
+      Tags:
+        - Key: Name
+          Value: ElasticIp1b
   NatGateway1a:
     Type: AWS::EC2::NatGateway
     Properties:
@@ -17,3 +25,11 @@ Resources:
       Tags:
         - Key: Name
           Value: NatGateway1a
+  NatGateway1b:
+    Type: AWS::EC2::NatGateway
+    Properties:
+      SubnetId: !Ref Subnet2Id
+      AllocationId: !GetAtt ElasticIp1b.AllocationId
+      Tags:
+        - Key: Name
+          Value: NatGateway1b
