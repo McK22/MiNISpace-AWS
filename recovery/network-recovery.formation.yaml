@@ -1,0 +1,92 @@
+Resources:
+  RecoveryVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsHostnames: true
+      EnableDnsSupport: true
+      Tags:
+        - Key: Name
+          Value: RecoveryVPC
+  PublicSubnet1c:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref RecoveryVPC
+      CidrBlock: 10.0.0.0/24
+      AvailabilityZone: us-east-1c
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: PublicSubnet1c
+        - Key: AvailabilityZone
+          Value: 1c
+        - Key: Access
+          Value: Public
+  PrivateSubnet1c:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref RecoveryVPC
+      CidrBlock: 10.0.2.0/23
+      AvailabilityZone: us-east-1c
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: Name
+          Value: PrivateSubnet1c
+        - Key: AvailabilityZone
+          Value: 1c
+        - Key: Access
+          Value: Private
+  PublicSubnet1d:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref RecoveryVPC
+      CidrBlock: 10.0.1.0/24
+      AvailabilityZone: us-east-1d
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: PublicSubnet1d
+        - Key: AvailabilityZone
+          Value: 1d
+        - Key: Access
+          Value: Public
+  PrivateSubnet1d:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref RecoveryVPC
+      CidrBlock: 10.0.4.0/23
+      AvailabilityZone: us-east-1d
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: Name
+          Value: PrivateSubnet1d
+        - Key: AvailabilityZone
+          Value: 1d
+        - Key: Access
+          Value: Private
+  InternetGatewayStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://s3.amazonaws.com/cf-minispace-bucket/internet-gateway.formation.yaml
+      Parameters:
+        VpcId: !Ref RecoveryVPC
+  NatGatewayStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://s3.amazonaws.com/cf-minispace-bucket/nat-gateway-recovery.formation.yaml
+      Parameters:
+        Subnet1Id: !Ref PublicSubnet1c
+        Subnet2Id: !Ref PublicSubnet1d
+
+
+Outputs:
+  VpcId:
+    Value: !Ref RecoveryVPC
+  PublicSubnet1c:
+    Value: !Ref PublicSubnet1c
+  PrivateSubnet1c:
+    Value: !Ref PrivateSubnet1c
+  PublicSubnet1d:
+    Value: !Ref PublicSubnet1d
+  PrivateSubnet1d:
+    Value: !Ref PrivateSubnet1d
