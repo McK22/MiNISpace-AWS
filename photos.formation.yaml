@@ -2,18 +2,18 @@ Resources:
   BucketStack:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://s3.amazonaws.com/cff-minispace-bucket/photos-bucket.formation.yaml
+      TemplateURL: https://s3.amazonaws.com/cf-minispace-bucket/photos-bucket.formation.yaml
   CloudFrontStack:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://s3.amazonaws.com/cff-minispace-bucket/photos-cloudfront.formation.yaml
+      TemplateURL: https://s3.amazonaws.com/cf-minispace-bucket/photos-cloudfront.formation.yaml
       Parameters:
         BucketId: !GetAtt BucketStack.Outputs.BucketId
         BucketDomainName: !GetAtt BucketStack.Outputs.BucketDomainName
   LambdaStack:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://s3.amazonaws.com/cff-minispace-bucket/photos-lambda.formation.yaml
+      TemplateURL: https://s3.amazonaws.com/cf-minispace-bucket/photos-lambda.formation.yaml
   BucketPolicy:
     Type: AWS::S3::BucketPolicy
     Properties:
@@ -29,7 +29,7 @@ Resources:
               "Service": "cloudfront.amazonaws.com"
             },
             "Action": "s3:GetObject",
-            "Resource": "arn:aws:s3:::minispace-photoss/*",
+            "Resource": "arn:aws:s3:::minispace-photos/*",
             "Condition": {
               "StringEquals": {
                 "AWS:SourceArn": !Sub "arn:aws:cloudfront::${AWS::AccountId}:distribution/${CloudFrontStack.Outputs.Distribution}"
@@ -46,7 +46,7 @@ Resources:
               "s3:PutObject",
               "s3:DeleteObject"
             ],
-            "Resource": "arn:aws:s3:::minispace-photoss/*",
+            "Resource": "arn:aws:s3:::minispace-photos/*",
             "Condition": {
               "ArnLike": {
                 "AWS:SourceArn": !Sub "arn:aws:lambda:us-east-1:${AWS::AccountId}:function:${LambdaStack.Outputs.Lambda}"

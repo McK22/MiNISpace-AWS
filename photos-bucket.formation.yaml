@@ -2,7 +2,7 @@ Resources:
   Bucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: minispace-photoss
+      BucketName: minispace-photos
       PublicAccessBlockConfiguration:
         IgnorePublicAcls: true
         RestrictPublicBuckets: true
@@ -13,4 +13,4 @@ Outputs:
   BucketDomainName:
     Value: !GetAtt Bucket.DomainName
   BucketName:
-    Value: minispace-photoss
+    Value: minispace-photos
